@@ -11,7 +11,7 @@ database = DataFrame(
   "password" => Vector{String}(),
 )
 
-function newUser(name::String, age::Int, gender::String, email::String, password::String)
+function createUser(name::String, age::Int, gender::String, email::String, password::String)
   id = nrow(database) + 1
   push!(database, (
     id, name, age, gender, email, password
@@ -63,7 +63,7 @@ end
 function ControllerCreateUser()
   userData = jsonpayload()
 
-  newUser(
+  createUser(
     userData["name"],
     userData["age"],
     userData["gender"],
