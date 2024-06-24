@@ -24,6 +24,22 @@ function ControllerCreateUser()
   return Json.json("mesagem" => "User created", status=201)
 end
 
+function ControllerUpdateUser()
+  id = parse(Int, params(:id))
+  idx = findfirst(x -> x == id, database[!, "id"])
+  if idx!== nothing
+    userData = jsonpayload()
+    database[idx, "name"] = userData["name"]
+    database[idx, "age"] = userData["age"]
+    database[idx, "gender"] = userData["gender"]
+    database[idx, "email"] = userData["email"]
+    database[idx, "password"] = userData["password"]
+    return json("message" => "User updated successfully", status=200)
+  else
+    return json("message" => "User not found", status=404)
+  end
+end
+
 function ControllerDeleteUser()
   idx = findfirst(x -> x == deleteUser(), database[!, "id"])
   if idx !== nothing

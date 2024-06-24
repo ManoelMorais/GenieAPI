@@ -5,8 +5,8 @@ function createUser(name::String, age::Int, gender::String, email::String, passw
   ))
 end
 
-function getUser(id::Int)
-  user = filter(x -> x.id == id, database)
+function getUser()
+  user = parse(Int, params(:id))
   if isempty(user)
     return nothing
   else
@@ -35,6 +35,13 @@ function getUsers()
     ))
   end
   return ret
+end
+
+function updateUser()
+  db = database
+  id = parse(Int, params(:id))
+  idx = findfirst(x -> x == id, db[!, "id"])
+  return idx
 end
 
 function deleteUser()
