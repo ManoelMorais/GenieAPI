@@ -19,7 +19,19 @@ function newUser(name::String, age::Int, gender::String, email::String, password
 end
 
 function getUser(id::Int)
-  return filter(x -> x.id == id, database)
+  user = filter(x -> x.id == id, database)
+  if isempty(user)
+    return nothing
+  else
+    return Dict(
+      "id" => user.id[1],
+      "name" => user.name[1],
+      "age" => user.age[1],
+      "gender" => user.gender[1],
+      "email" => user.email[1],
+      "password" => user.password[1]
+    )
+  end
 end
 
 function getUsers()
@@ -36,6 +48,11 @@ function getUsers()
     ))
   end
   return ret
+end
+
+function ControllerGetUserById()
+  id = parse(Int, payload(:id))
+  return Json.json(getUser(id))
 end
 
 function ControllerGetUsers()
@@ -57,7 +74,7 @@ function ControllerCreateUser()
 end
 
 route(ControllerGetUsers, "/page/users", method="GET")
-route(ControllerGetUsers, "/page/users/:id", method="GET")
+route(ControllerGetUserById, "/page/users/:id", method="GET")
 route(ControllerCreateUser, "/page/user/createuser", method="POST")
 
 #end # module API
