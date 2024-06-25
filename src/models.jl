@@ -1,50 +1,48 @@
+function getId()
+  id = parse(Int, params(:id))
+  return id
+end
+
 function createUser(name::String, age::Int, gender::String, email::String, password::String)
-  id = nrow(database) + 1
-  push!(database, (
-    id, name, age, gender, email, password
-  ))
+  userCreate = """INSERT INTO usuario (name, age, gender, email, password) VALUES (?,?,?,?,?);"""
+  dados = DBInterface.prepare(conn, userCreate)
+  DBInterface.execute(dados,(name, age, gender, email, password))
 end
 
 function getUser()
-  user = parse(Int, params(:id))
-  if isempty(user)
-    return nothing
+  result = DBInterface.prepare(conn, "SELECT * FROM usuario WHERE id = ?")
+  dados = DBInterface.execute(result,(getId(),))
+  if isempty(dados)
+    return Json.error("User not found")
   else
     return Dict(
-      "id" => user.id[1],
-      "name" => user.name[1],
-      "age" => user.age[1],
-      "gender" => user.gender[1],
-      "email" => user.email[1],
-      "password" => user.password[1]
+      "id" => dados.id[1],
+      "name" => dados.name[1],
+      "age" => dados.age[1],
+      "gender" => dados.gender[1],
+      "email" => dados.email[1],
+      "password" => dados.password[1]
     )
   end
 end
 
-function getUsers()
-  db = database
+function getUsers(result)
   ret = []
-  for i in 1:nrow(db)
+  for row in result
     push!(ret, Dict(
-      "id" => db.id[i],
-      "name" => db.name[i],
-      "age" => db.age[i],
-      "gender" => db.gender[i],
-      "email" => db.email[i],
-      "password" => db.password[i],
+      "id" => row[1],
+      "name" => row[2],
+      "age" => row[3],
+      "gender" => row[4],
+      "email" => row[5],
+      "password" => row[6],
     ))
   end
   return ret
 end
 
-function updateUser()
-  db = database
-  id = parse(Int, params(:id))
-  idx = findfirst(x -> x == id, db[!, "id"])
-  return idx
-end
-
-function deleteUser()
-  id = parse(Int, params(:id))
-  return id
+function updateUser(name::String, age::Int, gender::String, email::String, password::String)
+  updateUser = """UPDATE usuario SET name =?, age =?, gender =?, email =?, password =?"""
+  dados = DBInterface.prepare(conn,updateUser)
+  DBInterface.execute(dados, (name, age, gender, email, password, ))
 end
