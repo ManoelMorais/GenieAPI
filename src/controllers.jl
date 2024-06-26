@@ -1,6 +1,6 @@
 function ControllerGetUserById()
   try
-    id = getId()
+    id = getUser()
     return Json.json(id, status=200)
   catch
     return Json.json("mesagem" => "User not found", status=404)
