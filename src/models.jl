@@ -41,8 +41,8 @@ function getUsers(result)
   return ret
 end
 
-function updateUser(name::String, age::Int, gender::String, email::String, password::String)
-  updateUser = """UPDATE usuario SET name =?, age =?, gender =?, email =?, password =?"""
+function updateUser(name::String, age::Int, gender::String, email::String, password::String, id::Int)
+  updateUser = """UPDATE usuario SET name =?, age =?, gender =?, email =?, password =?, WHERE id = ?;"""
   dados = DBInterface.prepare(conn,updateUser)
-  DBInterface.execute(dados, (name, age, gender, email, password, ))
+  DBInterface.execute(dados, (name, age, gender, email, password, id))
 end
