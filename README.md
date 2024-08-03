@@ -1,6 +1,6 @@
 # Class Diagram
 
-``` marmaid
+``` mermaid
 classDiagram
     class Conta {
         +int idConta
