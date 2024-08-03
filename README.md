@@ -1,59 +1,62 @@
-# Class Diagram
+# Diagrama
 
 ``` mermaid
 classDiagram
+    class Usuario {
+        int id
+        String cpf
+        String nome
+        Date dataNascimento
+        String email
+        String senha
+        +boolean validarCPF()
+        +boolean isAdulto()
+    }
+
     class Conta {
-        +int idConta
-        +String nome
-        +String cpf
-        +String email
-        +String senha
-        +double saldo
-        +Date dataCriacao
-        +criarConta()
-        +validarCPF()
-        +validarIdade()
-    }
-    
-    class Auth {
-        +String email
-        +String senha
-        +login()
-    }
-
-    class Pix {
-        +int idPix
-        +double valor
-        +String qrCode
-        +gerarQRCode()
-        +verificarPagamento()
-    }
-
-    class Transferencia {
-        +int idTransferencia
-        +int idContaOrigem
-        +int idContaDestino
-        +double valor
-        +Date dataTransferencia
-        +transferir()
+        int id
+        int idUsuario
+        double saldo
+        +void depositar(double valor)
+        +void transferir(int idContaDestino, double valor)
+        +double obterSaldo()
     }
 
     class Transacao {
-        +int idTransacao
-        +int idConta
-        +double valor
-        +String tipo
-        +Date dataTransacao
-        +listarTransacoes()
+        int id
+        int idConta
+        String tipo
+        double valor
+        Date data
+        +boolean validarTransacao()
     }
 
-    Conta --|> Auth
-    Conta "1" -- "many" Transacao : gera
-    Conta "1" -- "many" Transferencia : realiza
-    Conta "1" -- "many" Pix : adicionaSaldo
+    class ServicoAutenticacao {
+        +String login(String email, String senha)
+        +Usuario registrar(Usuario usuario)
+    }
 
-    Transacao "many" -- "1" Conta : pertence
-    Transferencia "many" -- "1" Conta : origem
-    Transferencia "many" -- "1" Conta : destino
-    Pix "many" -- "1" Conta : depósito
+    class ServicoConta {
+        +Conta criarConta(int idUsuario)
+        +Conta obterConta(int idConta)
+        +QRCode gerarDeposito(double valor)
+        +boolean verificarDeposito(int idDeposito)
+        +void transferir(int idContaOrigem, int idContaDestino, double valor)
+    }
+
+    class ServicoTransacao {
+        +Transacao criarTransacao(int idConta, String tipo, double valor)
+        +List~Transacao~ obterTransacoes(int idConta)
+    }
+
+    class ServicoPix {
+        +QRCode gerarQRCode(double valor)
+        +boolean verificarPagamento(QRCode)
+    }
+
+    Usuario "1" --> "1..*" Conta : possui
+    Conta "1" --> "1..*" Transacao : contém
+    ServicoConta --> ServicoAutenticacao : usa
+    ServicoConta --> ServicoPix : usa
+    ServicoConta --> ServicoTransacao : usa 
 ```
