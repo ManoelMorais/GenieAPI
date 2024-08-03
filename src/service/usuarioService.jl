@@ -1,14 +1,17 @@
 using UUIDs
 
-function createUser(cpf::Int, nome::String, dataNascimento::String, email::String, password::String)
-    GerarId = UUIDs.uuid4()
-    ConverterDataNascimento = Dates.format(Dates.Date(dataNascimento, "yyyy-mm-dd"), "yyyy-mm-dd")
-    uuid_str = string(GerarId)
+function createUser(cpf::String, nome::String, dataNascimento::String, email::String, password::String)
+  if usuarioExiste(conn, cpf, email)
+    throw(ErrorException("Usuário já existe com este CPF ou email"))
+  end
 
-    userCreate = """INSERT INTO usuario (id, cpf, nome, dataNascimento, email, password) VALUES (?,?,?,?,?,?);"""
-    
-    dados = DBInterface.prepare(conn, userCreate)
-    DBInterface.execute(dados, (uuid_str, cpf, nome, ConverterDataNascimento, email, password))
+  GerarId = UUIDs.uuid4()
+  uuid_str = string(GerarId)
+
+  userCreate = """INSERT INTO usuario (id, cpf, nome, dataNascimento, email, password) VALUES (?,?,?,?,?,?);"""
+
+  dados = DBInterface.prepare(conn, userCreate)
+  DBInterface.execute(dados, (uuid_str, cpf, nome, dataNascimento, email, password))
 end
 
 function getUser()

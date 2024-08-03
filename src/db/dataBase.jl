@@ -9,10 +9,10 @@ DBInterface.execute(conn, "CREATE DATABASE IF NOT EXISTS banco")
 DBInterface.execute(conn, "USE banco")
 DBInterface.execute(conn, """CREATE TABLE IF NOT EXISTS usuario (
                         id CHAR(36) PRIMARY KEY,
-                        cpf VARCHAR(11) NOT NULL,
+                        cpf CHAR(11) UNIQUE NOT NULL,
                         nome VARCHAR(100) NOT NULL,
                         dataNascimento DATE NOT NULL,
-                        email VARCHAR(100) NOT NULL,
+                        email VARCHAR(100) UNIQUE NOT NULL,
                         password VARCHAR(50) NOT NULL
                         );""")
 
