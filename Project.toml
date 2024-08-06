@@ -1,7 +1,7 @@
 name = "API"
 uuid = "f4e546a0-54bf-404c-8175-c983a8a11a66"
 authors = ["Manoel <999142818m@gmail.com>"]
-version = "0.1.0"
+version = "0.0.1"
 
 [deps]
 ConfParser = "88353bc9-fd38-507d-a820-d3b43837d6b9"
