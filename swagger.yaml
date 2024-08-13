@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  title: Swagger Bank - OpenAPI 3.0
+  description: |-
+    This is a sample Bank Server based on the OpenAPI 3.0 specification.  
+    You can find out more about Swagger at [https://swagger.io](https://swagger.io).
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://bank2.swagger.io/api/v3
+tags:
+  - name: conta
+    description: Operations about conta
+paths:
+  /conta:
+    post:
+      tags:
+        - conta
+      summary: Create user
+      description: This can only be done by the logged-in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Account created successfully
+        '400':
+          description: Invalid CPF or underage
+  /conta/login:
+    post:
+      tags:
+        - conta
+      summary: Login with system
+      description: ''
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful, returns token and user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT or Access Token
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid email/password supplied
+  /contas/transferencias/{idconta}:
+    post:
+      tags:
+        - conta
+      summary: Transfer funds to another account
+      description: Transfer funds between accounts.
+      operationId: transferFunds
+      parameters:
+        - name: idconta
+          in: path
+          description: ID of the account initiating the transfer
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Transfer details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 100.50
+                recipientId:
+                  type: integer
+      responses:
+        '200':
+          description: Transfer successful
+        '400':
+          description: Invalid transfer details
+  /contas/depositos/gerar:
+    post:
+      tags:
+        - conta
+      summary: Generate a deposit
+      description: Generates a QR code for a deposit.
+      operationId: generateDeposit
+      requestBody:
+        description: Deposit details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 250.00
+      responses:
+        '201':
+          description: Deposit generated successfully
+  /contas/depositos/{iddeposito}:
+    get:
+      tags:
+        - conta
+      summary: Get deposit details
+      description: Fetch deposit details by ID.
+      operationId: getDepositById
+      parameters:
+        - name: iddeposito
+          in: path
+          description: ID of the deposit to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: number
+                    format: float
+                  status:
+                    type: string
+                    enum: [pending, completed, failed]
+        '404':
+          description: Deposit not found
+  /contas/transacoes:
+    get:
+      tags:
+        - conta
+      summary: Get transaction history
+      description: Fetch the transaction history of an account.
+      operationId: getTransactionHistory
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: [deposit, transfer, withdrawal]
+                    amount:
+                      type: number
+                      format: float
+                    date:
+                      type: string
+                      format: date-time
+  /conta/{idconta}:
+    get:
+      tags:
+        - conta
+      summary: Get user by account ID
+      description: Fetch account details by ID.
+      operationId: getAccountById
+      parameters:
+        - name: idconta
+          in: path
+          description: ID of the account to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized access
+        '404':
+          description: Account not found
+    put:
+      tags:
+        - conta
+      summary: Update user
+      description: This can only be done by the logged-in user.
+      operationId: updateUser
+      parameters:
+        - name: idconta
+          in: path
+          description: ID of the account to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update an existing user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - conta
+      summary: Delete user
+      description: This can only be done by the logged-in user.
+      operationId: deleteUser
+      parameters:
+        - name: idconta
+          in: path
+          description: ID of the account to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '400':
+          description: Invalid account ID supplied
+        '404':
+          description: User not foun
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cpf:
+          type: string
+          example: '11111111111'
+        nome:
+          type: string
+          example: John
+        dataNascimento:
+          type: string
+          example: '2005/05/13'
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+      xml:
+        name: Conta
+  requestBodies:
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
