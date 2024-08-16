@@ -2,7 +2,7 @@
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "e4749f4c6304483278fd2fc56cf669246aeb8963"
+project_hash = "ac4e48d4f301df4a18dbfd1c77c7721c4abe712d"
 
 [[deps.ArgParse]]
 deps = ["Logging", "TextWrap"]
@@ -263,6 +263,12 @@ version = "1.14.0"
 
     [deps.JSON3.weakdeps]
     ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+
+[[deps.JSONSchema]]
+deps = ["Downloads", "JSON", "JSON3", "URIs"]
+git-tree-sha1 = "12b043193737b6f3224715c642a1ae2097b0e75d"
+uuid = "7d188eb4-7ad8-530c-ae41-71a32a6d4692"
+version = "1.4.0"
 
 [[deps.JuliaFormatter]]
 deps = ["CSTParser", "CommonMark", "DataStructures", "Glob", "Pkg", "PrecompileTools", "Tokenize"]
@@ -588,6 +594,18 @@ version = "1.10.0"
 deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
 version = "7.2.1+1"
+
+[[deps.SwagUI]]
+deps = ["HTTP", "JSON", "Test"]
+git-tree-sha1 = "3b131b0726fc1b56e9ae86668b5e5bc44fe14d08"
+uuid = "bf05d729-34b2-4f1f-a2f1-2452bece7ebc"
+version = "0.10.0"
+
+[[deps.SwaggerMarkdown]]
+deps = ["JSON", "JSONSchema", "Test", "UUIDs", "YAML"]
+git-tree-sha1 = "ea2513768e67b5ca27bbbab19e34179714a78cab"
+uuid = "1b6eb727-ad4b-44eb-9669-b9596a6e760f"
+version = "0.2.1"
 
 [[deps.TOML]]
 deps = ["Dates"]
